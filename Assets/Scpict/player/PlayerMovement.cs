@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
-    [Header("Input Actions (ลากไฟล์ Action มาใส่ตรงนี้)")]
+    [Header("Input Actions")]
     public InputActionReference moveAction;
     public InputActionReference jumpAction;
     public InputActionReference sprintAction;
