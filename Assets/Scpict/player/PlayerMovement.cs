@@ -1,51 +1,54 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
-
+    [Header("Input Actions (ลากไฟล์ Action มาใส่ตรงนี้)")]
+    public InputActionReference moveAction;
+    public InputActionReference jumpAction;
+    public InputActionReference sprintAction;
+    [Header("Settings")]
     public float walkSpeed = 5f;
     public float runSpeed = 10f;
-    public float gravity = -19.62f; // แรงโน้มถ่วง (ปรับตามความเหมาะสม)
+    public float gravity = -19.62f;
     public float jumpHeight = 2f;
-
     Vector3 velocity;
     bool isGrounded;
-
-    // ตรวจสอบพื้น
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
-
     void Update()
     {
-        // เช็คว่าเท้าแตะพื้นหรือไม่
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-
         if (isGrounded && velocity.y < 0)
         {
-            velocity.y = -2f; // ให้ตัวติดพื้นไว้เล็กน้อย
+            velocity.y = -2f;
         }
-
-        // รับค่า Input
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-
-        // ตรวจสอบว่ากดปุ่มวิ่ง (Shift) หรือไม่
-        float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
-
-        // คำนวณทิศทางตามตัวละคร
+        Vector2 inputVector = moveAction.action.ReadValue<Vector2>();
+        float x = inputVector.x;
+        float z = inputVector.y;
+        bool isSprinting = sprintAction.action.IsPressed();
+        float currentSpeed = isSprinting ? runSpeed : walkSpeed;
         Vector3 move = transform.right * x + transform.forward * z;
         controller.Move(move * currentSpeed * Time.deltaTime);
-
-        // การกระโดด
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (jumpAction.action.WasPressedThisFrame() && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
-
-        // คำนวณแรงโน้มถ่วง
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+    }
+    private void OnEnable() 
+    {
+        moveAction.action.Enable();
+        jumpAction.action.Enable();
+        sprintAction.action.Enable();
+    }
+    private void OnDisable() 
+    {
+        moveAction.action.Disable();
+        jumpAction.action.Disable();
+        sprintAction.action.Disable();
     }
 }
