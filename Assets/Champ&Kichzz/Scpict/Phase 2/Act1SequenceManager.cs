@@ -4,16 +4,17 @@ using System.Collections;
 public class Act1SequenceManager : MonoBehaviour
 {
     [Header("เป้าหมายการสำรวจ")]
-    public int dummyCluesRequired = 2;
+    public int dummyCluesRequired = 2; 
     private int currentCluesFound = 0;
 
     [Header("องค์ประกอบฉาก")]
-    public GameObject ghostTriggerZone;
+    public GameObject ghostTriggerZone; 
 
     void Start()
     {
-        if(ghostTriggerZone) ghostTriggerZone.SetActive(false);
+        if(ghostTriggerZone) ghostTriggerZone.SetActive(false); // ซ่อนกล่องดักผีไว้ก่อน
     }
+
     public void AddDummyClueFound()
     {
         currentCluesFound++;
@@ -27,8 +28,9 @@ public class Act1SequenceManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
         Debug.Log("เข้ม: มันต้องมีสิ... ตำรวจมันชุ่ย... มันต้องทิ้งอะไรไว้บ้าง!!");
-        // TODO: สั่งเล่น Animation ทุบพื้น หรือเล่นเสียงพากย์ที่นี่
         yield return new WaitForSeconds(2.0f);
+        
+        // เปิดให้จุดดักผีทำงาน!
         if(ghostTriggerZone) ghostTriggerZone.SetActive(true);
     }
 }

@@ -13,20 +13,20 @@ public class GhostEncounterManager : MonoBehaviour
     [Header("Player Control & Camera Lock")]
     public MonoBehaviour playerController; 
     public Camera mainCamera; 
-    public GameObject virtualCamera; // ตัว Follow Camera ที่ต้องสั่งปิดไม่ให้มันดึงกล้องกลับ
+    public GameObject virtualCamera; 
 
     [Header("Ghost Elements")]
     public GameObject ghostEntity;
 
-    [Header("The Inevitable Car (รถพุ่งชน)")]
+    [Header("The Inevitable Car")]
     public GameObject fakeCar;
     public Transform carSpawnPoint;
     public float carSpeed = 25f;
     public AudioSource carRushAudio;
     public AudioSource jumpscareAudio;
 
-    [Header("The Key Evidence (หลักฐานชิ้นสำคัญ)")]
-    public GameObject finalEvidence;
+    [Header("The Key Evidence")]
+    public GameObject finalEvidence; // หลักฐานจริงที่จะโผล่ตอนจบ
 
     private bool hasTriggered = false;
 
@@ -48,13 +48,18 @@ public class GhostEncounterManager : MonoBehaviour
 
     private IEnumerator PlayGhostSequence()
     {
+        // 1. ล็อกขา & ปิดกล้องอัจฉริยะชั่วคราว
         if (playerController) playerController.enabled = false;
-        if (virtualCamera) virtualCamera.SetActive(false);
+        if (virtualCamera) virtualCamera.SetActive(false); 
+
         float startRainVol = rainAudio != null ? rainAudio.volume : 1f;
         if (rainAudio) rainAudio.volume = 0f;
         if (glitchVolume) glitchVolume.weight = 1f;
         if (playerFlashlight) playerFlashlight.StartGlitchFlicker(3.5f);
+
         yield return new WaitForSeconds(1.0f);
+
+        // 2. ผีโผล่ & บังคับกล้องมองผี
         if (ghostEntity) ghostEntity.SetActive(true);
         float lookDuration = 0.8f;
         float elapsed = 0f;
@@ -69,6 +74,7 @@ public class GhostEncounterManager : MonoBehaviour
             Vector3 bodyDir = (ghostEntity.transform.position - playerBody.position).normalized;
             bodyDir.y = 0; 
             if (bodyDir != Vector3.zero) playerBody.rotation = Quaternion.Slerp(startBodyRot, Quaternion.LookRotation(bodyDir), t);
+
             if (mainCamera != null)
             {
                 Vector3 camDir = (ghostFacePos - mainCamera.transform.position).normalized;
@@ -76,7 +82,10 @@ public class GhostEncounterManager : MonoBehaviour
             }
             yield return null; 
         }
-        yield return new WaitForSeconds(1.5f);
+
+        yield return new WaitForSeconds(1.5f); // แช่ภาพผี 1.5 วิ
+
+        // 3. รถวิ่งชน! ปล่อยให้วิ่งหนีได้
         if (virtualCamera) virtualCamera.SetActive(true); 
         if (playerController) playerController.enabled = true;
 
@@ -84,7 +93,6 @@ public class GhostEncounterManager : MonoBehaviour
         {
             fakeCar.transform.position = carSpawnPoint.position;
             fakeCar.SetActive(true);
-            
             if (carRushAudio) carRushAudio.Play();
 
             while (Vector3.Distance(fakeCar.transform.position, playerBody.position) > 2.5f)
@@ -95,20 +103,26 @@ public class GhostEncounterManager : MonoBehaviour
                 yield return null;
             }
         }
+
+        // 4. จอมืด Jumpscare
         if (playerController) playerController.enabled = false;
         if (jumpscareAudio) jumpscareAudio.Play();
         if (glitchVolume) glitchVolume.weight = 1f; 
         if (fakeCar) fakeCar.SetActive(false);
         if (ghostEntity) ghostEntity.SetActive(false);
+
         yield return new WaitForSeconds(0.8f); 
+
+        // 5. คืนสติ และ เปิดหลักฐานของจริง!
         if (glitchVolume) glitchVolume.weight = 0f;
         if (rainAudio) rainAudio.volume = startRainVol;
         if (playerController) playerController.enabled = true; 
+        
         Debug.Log("เข้ม: เมื่อกี้...เหี้ยไรวะ...");
+
         if (finalEvidence != null) 
         {
-            finalEvidence.SetActive(true);
-            Debug.Log("[ระบบ] หลักฐานชิ้นสำคัญโผล่มาที่จุดเกิดแล้ว");
+            finalEvidence.SetActive(true); // <--- โผล่มาให้เก็บแล้ว!
         }
     }
 }
