@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Searchable
+  - CinemachineTarget
+  - NPC
   layers:
   - Default
   - TransparentFX
