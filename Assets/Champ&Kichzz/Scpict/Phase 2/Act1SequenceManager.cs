@@ -12,7 +12,7 @@ public class Act1SequenceManager : MonoBehaviour
 
     void Start()
     {
-        if(ghostTriggerZone) ghostTriggerZone.SetActive(false); // ซ่อนกล่องดักผีไว้ก่อน
+        if(ghostTriggerZone) ghostTriggerZone.SetActive(false);
     }
 
     public void AddDummyClueFound()
@@ -29,8 +29,6 @@ public class Act1SequenceManager : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         Debug.Log("เข้ม: มันต้องมีสิ... ตำรวจมันชุ่ย... มันต้องทิ้งอะไรไว้บ้าง!!");
         yield return new WaitForSeconds(2.0f);
-        
-        // เปิดให้จุดดักผีทำงาน!
         if(ghostTriggerZone) ghostTriggerZone.SetActive(true);
     }
 }

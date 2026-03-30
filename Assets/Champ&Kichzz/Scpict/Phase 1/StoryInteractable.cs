@@ -10,8 +10,7 @@ public class StoryInteractable : MonoBehaviour
 
     [Header("Post-survey events")]
     public UnityEvent onInteract;
-    
-    private bool hasInteracted = false;
+    public bool hasInteracted = false; 
 
     public void DoInteract()
     {

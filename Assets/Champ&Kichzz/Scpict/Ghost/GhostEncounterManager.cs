@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
+using TMPro;
 
 public class GhostEncounterManager : MonoBehaviour
 {
@@ -26,9 +27,24 @@ public class GhostEncounterManager : MonoBehaviour
     public AudioSource jumpscareAudio;
 
     [Header("The Key Evidence")]
-    public GameObject finalEvidence; // หลักฐานจริงที่จะโผล่ตอนจบ
+    public GameObject finalEvidence; 
 
+    [Header("UI & Subtitles")]
+    public TextMeshProUGUI subtitleText; 
+    public float subtitleDuration = 3f; 
+    
+    [Header("Dialogue Texts (กดปุ่ม + เพื่อเพิ่มประโยค)")]
+    [Tooltip("คำพูดตอนไฟฉายกระพริบ (เล่นเรียงตามลำดับ)")]
+    [TextArea(2, 3)] public string[] flashlightGlitchTexts;
+    
+    [Tooltip("คำพูดตอนผีโผล่ (เล่นเรียงตามลำดับ)")]
+    [TextArea(2, 3)] public string[] ghostAppearTexts;
+    
+    [Tooltip("คำพูดตอนจบเหตุการณ์ (เล่นเรียงตามลำดับ)")]
+    [TextArea(2, 3)] public string[] aftermathTexts;
+    
     private bool hasTriggered = false;
+    private Coroutine activeSubtitleCoroutine;
 
     void Start()
     {
@@ -48,19 +64,16 @@ public class GhostEncounterManager : MonoBehaviour
 
     private IEnumerator PlayGhostSequence()
     {
-        // 1. ล็อกขา & ปิดกล้องอัจฉริยะชั่วคราว
         if (playerController) playerController.enabled = false;
         if (virtualCamera) virtualCamera.SetActive(false); 
-
         float startRainVol = rainAudio != null ? rainAudio.volume : 1f;
         if (rainAudio) rainAudio.volume = 0f;
         if (glitchVolume) glitchVolume.weight = 1f;
         if (playerFlashlight) playerFlashlight.StartGlitchFlicker(3.5f);
-
+        PlaySubtitles(flashlightGlitchTexts);
         yield return new WaitForSeconds(1.0f);
-
-        // 2. ผีโผล่ & บังคับกล้องมองผี
         if (ghostEntity) ghostEntity.SetActive(true);
+        PlaySubtitles(ghostAppearTexts);
         float lookDuration = 0.8f;
         float elapsed = 0f;
         Vector3 ghostFacePos = ghostEntity.transform.position + (Vector3.up * 1.5f);
@@ -83,9 +96,7 @@ public class GhostEncounterManager : MonoBehaviour
             yield return null; 
         }
 
-        yield return new WaitForSeconds(1.5f); // แช่ภาพผี 1.5 วิ
-
-        // 3. รถวิ่งชน! ปล่อยให้วิ่งหนีได้
+        yield return new WaitForSeconds(1.5f); 
         if (virtualCamera) virtualCamera.SetActive(true); 
         if (playerController) playerController.enabled = true;
 
@@ -103,26 +114,42 @@ public class GhostEncounterManager : MonoBehaviour
                 yield return null;
             }
         }
-
-        // 4. จอมืด Jumpscare
         if (playerController) playerController.enabled = false;
         if (jumpscareAudio) jumpscareAudio.Play();
         if (glitchVolume) glitchVolume.weight = 1f; 
         if (fakeCar) fakeCar.SetActive(false);
         if (ghostEntity) ghostEntity.SetActive(false);
-
         yield return new WaitForSeconds(0.8f); 
-
-        // 5. คืนสติ และ เปิดหลักฐานของจริง!
         if (glitchVolume) glitchVolume.weight = 0f;
         if (rainAudio) rainAudio.volume = startRainVol;
         if (playerController) playerController.enabled = true; 
-        
-        Debug.Log("เข้ม: เมื่อกี้...เหี้ยไรวะ...");
-
+        PlaySubtitles(aftermathTexts);
         if (finalEvidence != null) 
         {
-            finalEvidence.SetActive(true); // <--- โผล่มาให้เก็บแล้ว!
+            finalEvidence.SetActive(true); 
         }
+    }
+    private void PlaySubtitles(string[] textsToPlay)
+    {
+        if (textsToPlay == null || textsToPlay.Length == 0 || subtitleText == null) return;
+        if (activeSubtitleCoroutine != null)
+        {
+            StopCoroutine(activeSubtitleCoroutine);
+        }
+        activeSubtitleCoroutine = StartCoroutine(ShowSequenceSubtitle(textsToPlay));
+    }
+    private IEnumerator ShowSequenceSubtitle(string[] texts)
+    {
+        subtitleText.gameObject.SetActive(true);
+
+        foreach (string text in texts)
+        {
+            if (!string.IsNullOrEmpty(text))
+            {
+                subtitleText.text = text;
+                yield return new WaitForSeconds(subtitleDuration);
+            }
+        }
+        subtitleText.gameObject.SetActive(false);
     }
 }
