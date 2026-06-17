@@ -1,7 +1,12 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ObjectInspector : MonoBehaviour
 {
+    [Header("Input Actions")]
+    public InputActionReference lookAction; // ดึงค่าเมาส์ (ดึงตัวเดียวกับของ MouseLook ได้เลย)
+    public InputActionReference cancelAction; // ปุ่มสำหรับออกจากการ Inspect (เช่น Esc หรือ คลิกขวา)
+
     [Header("References")]
     public Transform inspectPoint;
     public MonoBehaviour playerMoveScript;
@@ -9,22 +14,28 @@ public class ObjectInspector : MonoBehaviour
 
     private GameObject currentModel;
     private bool isInspecting = false;
-    public float rotateSpeed = 500f;
+    public float rotateSpeed = 50f; // *หมายเหตุ: New Input System ค่า Delta จะไวกว่าแบบเดิม อาจจะต้องลด rotateSpeed ลงมา
 
     void Update()
     {
         if (isInspecting && currentModel != null)
         {
-            float rotX = Input.GetAxis("Mouse X") * rotateSpeed * Time.deltaTime;
-            float rotY = Input.GetAxis("Mouse Y") * rotateSpeed * Time.deltaTime;
+            // ดึงค่าการขยับของเมาส์
+            Vector2 mouseDelta = lookAction.action.ReadValue<Vector2>();
+            float rotX = mouseDelta.x * rotateSpeed * Time.deltaTime;
+            float rotY = mouseDelta.y * rotateSpeed * Time.deltaTime;
+
             currentModel.transform.Rotate(Vector3.up, -rotX, Space.World);
             currentModel.transform.Rotate(Vector3.right, rotY, Space.World);
-            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1))
+            
+            // ตรวจสอบปุ่มกดยกเลิก
+            if (cancelAction.action.WasPressedThisFrame())
             {
                 CloseInspection();
             }
         }
     }
+
     public void ShowItem(GameObject itemPrefab)
     {
         if (isInspecting) return;
@@ -36,6 +47,7 @@ public class ObjectInspector : MonoBehaviour
         currentModel = Instantiate(itemPrefab, inspectPoint.position, inspectPoint.rotation);
         currentModel.transform.parent = inspectPoint;
     }
+
     public void CloseInspection()
     {
         isInspecting = false;
@@ -44,5 +56,16 @@ public class ObjectInspector : MonoBehaviour
         if(mouseLookScript != null) mouseLookScript.enabled = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    private void OnEnable() 
+    {
+        lookAction?.action.Enable();
+        cancelAction?.action.Enable();
+    }
+    private void OnDisable() 
+    {
+        lookAction?.action.Disable();
+        cancelAction?.action.Disable();
     }
 }

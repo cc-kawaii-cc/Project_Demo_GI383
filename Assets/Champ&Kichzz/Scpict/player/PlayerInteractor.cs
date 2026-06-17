@@ -1,11 +1,15 @@
 using UnityEngine;
 using TMPro; 
 using System.Collections; 
+using UnityEngine.InputSystem; // เพิ่มไลบรารี Input System
 
 public class PlayerInteractor : MonoBehaviour
 {
     public float interactRange = 3f;
     public LayerMask interactableLayer;
+
+    [Header("Input Actions")]
+    public InputActionReference interactAction; // รับค่าปุ่มกดสำรวจ (เช่น ปุ่ม E)
 
     [Header("Subtitle Settings")]
     public TextMeshProUGUI subtitleText;
@@ -31,7 +35,8 @@ public class PlayerInteractor : MonoBehaviour
             
             if (interactable != null && !interactable.hasInteracted)
             {
-                if (Input.GetKeyDown(KeyCode.E))
+                // ตรวจสอบว่าปุ่มถูกกดในเฟรมนี้หรือไม่
+                if (interactAction.action.WasPressedThisFrame()) 
                 {
                     interactable.DoInteract();
                     
@@ -49,9 +54,11 @@ public class PlayerInteractor : MonoBehaviour
     {
         subtitleText.text = text;
         subtitleText.gameObject.SetActive(true);
-        
         yield return new WaitForSeconds(subtitleDuration); 
-        
         subtitleText.gameObject.SetActive(false);
     }
+
+    // อย่าลืม Enable/Disable Action
+    private void OnEnable() => interactAction?.action.Enable();
+    private void OnDisable() => interactAction?.action.Disable();
 }

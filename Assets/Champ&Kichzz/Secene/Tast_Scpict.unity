@@ -409,6 +409,10 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3377336353364721807, guid: 8e8f9749690878e4f97f48224c938abd, type: 3}
+      propertyPath: interactAction
+      value: 
+      objectReference: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    - target: {fileID: 3377336353364721807, guid: 8e8f9749690878e4f97f48224c938abd, type: 3}
       propertyPath: interactableLayer.m_Bits
       value: 4294967295
       objectReference: {fileID: 0}
@@ -452,6 +456,14 @@ PrefabInstance:
       propertyPath: m_HorizontalAlignment
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5669119834406353549, guid: 8e8f9749690878e4f97f48224c938abd, type: 3}
+      propertyPath: lookAction
+      value: 
+      objectReference: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    - target: {fileID: 5669119834406353549, guid: 8e8f9749690878e4f97f48224c938abd, type: 3}
+      propertyPath: cancelAction
+      value: 
+      objectReference: {fileID: 7727032971491509709, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     - target: {fileID: 6989540481261986935, guid: 8e8f9749690878e4f97f48224c938abd, type: 3}
       propertyPath: m_Color.a
       value: 0
@@ -472,6 +484,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7808250620593762652, guid: 8e8f9749690878e4f97f48224c938abd, type: 3}
+      propertyPath: holdInteractAction
+      value: 
+      objectReference: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     - target: {fileID: 7944427284514056334, guid: 8e8f9749690878e4f97f48224c938abd, type: 3}
       propertyPath: m_Name
       value: player
@@ -2576,6 +2592,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f69f7d893ed924b41936972bdf3df942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogSystem
+  advanceDialogAction: {fileID: 0}
   playerMovement: {fileID: 1004284030}
   mouseLook: {fileID: 167462742}
   dialogPanel: {fileID: 674067348}

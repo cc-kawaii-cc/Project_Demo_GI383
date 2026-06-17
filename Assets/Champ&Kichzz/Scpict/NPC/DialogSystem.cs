@@ -1,10 +1,13 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class DialogSystem : MonoBehaviour
 {
-    
     public static DialogSystem instance;
+
+    [Header("Input Actions")]
+    public InputActionReference advanceDialogAction; // ปุ่มสำหรับคลิกเพื่อไปประโยคถัดไป
 
     [Header("Player Control")]
     public PlayerMovement playerMovement;
@@ -27,7 +30,6 @@ public class DialogSystem : MonoBehaviour
         if (instance == null) instance = this;
     }
 
-    
     public void StartDialog(NPCWalker npc, string[] names, string[] lines)
     {
         if (isTalking) return;
@@ -38,19 +40,17 @@ public class DialogSystem : MonoBehaviour
         currentLines = lines;
         currentLineIndex = 0;
 
-        
         if (playerMovement) playerMovement.enabled = false;
         if (mouseLook) mouseLook.enabled = false;
 
-        
         dialogPanel.SetActive(true);
         ShowNextLine();
     }
 
     void Update()
     {
-        
-        if (isTalking && Input.GetMouseButtonDown(0))
+        // ใช้ Action แทนเมาส์คลิกซ้าย
+        if (isTalking && advanceDialogAction.action.WasPressedThisFrame())
         {
             currentLineIndex++;
             if (currentLineIndex < currentLines.Length)
@@ -75,11 +75,11 @@ public class DialogSystem : MonoBehaviour
         isTalking = false;
         dialogPanel.SetActive(false);
         
-        // ปลดล็อกผู้เล่น
         if (playerMovement) playerMovement.enabled = true;
         if (mouseLook) mouseLook.enabled = true;
-
-        // สั่งให้ NPC เดินต่อ
         if (currentNPC) currentNPC.EndTalking();
     }
+
+    private void OnEnable() => advanceDialogAction?.action.Enable();
+    private void OnDisable() => advanceDialogAction?.action.Disable();
 }
