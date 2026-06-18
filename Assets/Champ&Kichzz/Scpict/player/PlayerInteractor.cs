@@ -1,64 +1,64 @@
 using UnityEngine;
-using TMPro; 
-using System.Collections; 
-using UnityEngine.InputSystem; // เพิ่มไลบรารี Input System
-
+using UnityEngine.InputSystem;
 public class PlayerInteractor : MonoBehaviour
 {
+    [Header("Raycast")]
     public float interactRange = 3f;
     public LayerMask interactableLayer;
 
-    [Header("Input Actions")]
-    public InputActionReference interactAction; // รับค่าปุ่มกดสำรวจ (เช่น ปุ่ม E)
+    [Header("Input (New Input System)")]
+    public InputActionReference interactAction;
 
-    [Header("Subtitle Settings")]
-    public TextMeshProUGUI subtitleText;
-    public float subtitleDuration = 4f;
+    [Header("UI")]
+    [Tooltip("ป้าย prompt เช่น '[E] สำรวจ' (optional)")]
+    public GameObject promptUI;
 
-    private Coroutine activeSubtitle;
-    private Camera mainCamera;
+    private Camera _cam;
 
-    void Start()
+    private void Start()
     {
-        mainCamera = Camera.main; 
+        _cam = ResolveCamera();
+        if (promptUI) promptUI.SetActive(false);
     }
 
-    void Update()
+    private Camera ResolveCamera()
     {
-        if (mainCamera == null) return; 
-        Ray ray = new Ray(mainCamera.transform.position, mainCamera.transform.forward);
+        if (PlayerManager.Instance != null && PlayerManager.Instance.playerCamera != null)
+            return PlayerManager.Instance.playerCamera;
+        return Camera.main;
+    }
+
+    private void Update()
+    {
+        if (GameManager.Instance != null && !GameManager.Instance.IsState(GameState.Exploration))
+        {
+            if (promptUI) promptUI.SetActive(false);
+            return;
+        }
+
+        if (_cam == null) { _cam = ResolveCamera(); if (_cam == null) return; }
+
+        Ray ray = new Ray(_cam.transform.position, _cam.transform.forward);
         Debug.DrawRay(ray.origin, ray.direction * interactRange, Color.red);
 
+        bool hovering = false;
         if (Physics.Raycast(ray, out RaycastHit hit, interactRange, interactableLayer))
         {
-            StoryInteractable interactable = hit.collider.GetComponent<StoryInteractable>();
-            
+            var interactable = hit.collider.GetComponent<StoryInteractable>();
             if (interactable != null && !interactable.hasInteracted)
             {
-                // ตรวจสอบว่าปุ่มถูกกดในเฟรมนี้หรือไม่
-                if (interactAction.action.WasPressedThisFrame()) 
+                hovering = true;
+                if (interactAction != null && interactAction.action.WasPressedThisFrame())
                 {
                     interactable.DoInteract();
-                    
-                    if (subtitleText != null)
-                    {
-                        if (activeSubtitle != null) StopCoroutine(activeSubtitle);
-                        activeSubtitle = StartCoroutine(ShowSubtitle(interactable.inspectText));
-                    }
+                    if (!string.IsNullOrEmpty(interactable.inspectText))
+                        SubtitleManager.Instance.Show(interactable.inspectText);
                 }
             }
         }
+        if (promptUI) promptUI.SetActive(hovering);
     }
 
-    IEnumerator ShowSubtitle(string text)
-    {
-        subtitleText.text = text;
-        subtitleText.gameObject.SetActive(true);
-        yield return new WaitForSeconds(subtitleDuration); 
-        subtitleText.gameObject.SetActive(false);
-    }
-
-    // อย่าลืม Enable/Disable Action
-    private void OnEnable() => interactAction?.action.Enable();
+    private void OnEnable()  => interactAction?.action.Enable();
     private void OnDisable() => interactAction?.action.Disable();
 }
