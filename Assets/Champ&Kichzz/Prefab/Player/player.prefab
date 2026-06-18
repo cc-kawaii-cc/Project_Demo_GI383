@@ -592,6 +592,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5eb9593d756eb34d8e808331714780c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectInspector
+  lookAction: {fileID: 0}
+  cancelAction: {fileID: 0}
   inspectPoint: {fileID: 83456195552456124}
   playerMoveScript: {fileID: 7609887654010131851}
   mouseLookScript: {fileID: 6379260034191327514}
@@ -1369,7 +1371,7 @@ MonoBehaviour:
   interactableLayer:
     serializedVersion: 2
     m_Bits: 128
-  promptText: {fileID: 0}
+  interactAction: {fileID: 0}
   subtitleText: {fileID: 0}
   subtitleDuration: 4
 --- !u!1 &7944427284514056334
@@ -1526,6 +1528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5e6335776b4eb544ae516c106ea038f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SearchInteract
+  holdInteractAction: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   handIcon: {fileID: 7113018700369158115}
   progressBar: {fileID: 7113018700369158115}
   searchTime: 2
@@ -1561,6 +1564,6 @@ MonoBehaviour:
   interactableLayer:
     serializedVersion: 2
     m_Bits: 128
-  promptText: {fileID: 4465719812223233134}
+  interactAction: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   subtitleText: {fileID: 4465719812223233134}
   subtitleDuration: 4
