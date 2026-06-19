@@ -1082,7 +1082,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9013995220044897030, guid: 7fae6fca9e8433042a1edabfc1c04f5e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1944,7 +1944,19 @@ MonoBehaviour:
   inspectText: 
   onInteract:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 684701553}
+        m_TargetAssemblyTypeName: StoryInteractable, Assembly-CSharp
+        m_MethodName: DoInteract
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   hasInteracted: 0
 --- !u!1001 &728140903
 PrefabInstance:
@@ -3460,19 +3472,41 @@ MonoBehaviour:
   onInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1433965469}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 0
+      - m_Target: {fileID: 1433965471}
+        m_TargetAssemblyTypeName: StoryInteractable, Assembly-CSharp
+        m_MethodName: DoInteract
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
   hasInteracted: 0
+--- !u!64 &1433965472
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1433965469}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4579454407841743219, guid: 5e546eeaa124d9c4fac7f82be9fd2043, type: 3}
 --- !u!1 &1433979712
 GameObject:
   m_ObjectHideFlags: 0
@@ -3879,6 +3913,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1330682963}
     m_Modifications:
+    - target: {fileID: 2705606842008400332, guid: 6d1635443d98355448462426c3207648, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 7310120186516649264, guid: 6d1635443d98355448462426c3207648, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.863
@@ -3923,6 +3961,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Chair Kam
       objectReference: {fileID: 0}
+    - target: {fileID: 7942400551970205578, guid: 6d1635443d98355448462426c3207648, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 8861145576658370437, guid: 6d1635443d98355448462426c3207648, type: 3}
       propertyPath: m_LocalScale.x
       value: 150
@@ -3954,6 +3996,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7942400551970205578, guid: 6d1635443d98355448462426c3207648, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1433965471}
+    - targetCorrespondingSourceObject: {fileID: 7942400551970205578, guid: 6d1635443d98355448462426c3207648, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1433965472}
   m_SourcePrefab: {fileID: 100100000, guid: 6d1635443d98355448462426c3207648, type: 3}
 --- !u!1001 &1584456241
 PrefabInstance:
